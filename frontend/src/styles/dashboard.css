@@ -1,0 +1,77 @@
+.page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px 14px 40px;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.page-header h1 {
+  margin: 0;
+  color: #0f4c81;
+}
+
+.actions-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.search-wrapper {
+  position: relative;
+  max-width: 500px;
+  margin-bottom: 14px;
+}
+
+.search-input {
+  width: 100%;
+}
+
+.search-loading {
+  position: absolute;
+  right: 10px;
+  top: 11px;
+  font-size: 0.8rem;
+  color: #5b6e82;
+}
+
+.suggestions-list {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  margin: 6px 0 0;
+  padding: 6px;
+  list-style: none;
+  background: #fff;
+  border: 1px solid #dae7f4;
+  border-radius: 10px;
+  box-shadow: 0 8px 20px rgba(18, 68, 114, 0.12);
+  z-index: 5;
+}
+
+.suggestion-item {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  border: none;
+  background: transparent;
+  padding: 8px;
+  border-radius: 8px;
+}
+
+.suggestion-item:hover {
+  background: #f3f8ff;
+}
+
+.suggestion-batch {
+  font-size: 0.8rem;
+  color: #4f6580;
+}

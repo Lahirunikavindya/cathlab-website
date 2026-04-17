@@ -1,0 +1,73 @@
+.table-wrapper {
+  overflow-x: auto;
+  border: 1px solid #dce8f4;
+  border-radius: 10px;
+  background: #fff;
+}
+
+.product-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.product-table thead {
+  background: #f4f8fc;
+}
+
+.product-table th,
+.product-table td {
+  text-align: left;
+  padding: 10px 12px;
+  border-bottom: 1px solid #edf2f7;
+  white-space: nowrap;
+}
+
+.product-table tbody tr:hover {
+  background: #f8fbff;
+}
+
+.badge {
+  margin-left: 8px;
+  border-radius: 999px;
+  padding: 2px 8px;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.badge-red {
+  background: #c0392b;
+  color: #fff;
+}
+
+.badge-orange {
+  background: #db8a13;
+  color: #fff;
+}
+
+.danger-text {
+  color: #b02d2d;
+  font-weight: 700;
+}
+
+.loading-box,
+.empty-box {
+  padding: 20px;
+  text-align: center;
+  color: #5f7388;
+}
+
+.spinner {
+  width: 28px;
+  height: 28px;
+  margin: 0 auto 8px;
+  border: 3px solid #dbe8f5;
+  border-top: 3px solid #1d6eaf;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  100% {
+    transform: rotate(360deg);
+  }
+}

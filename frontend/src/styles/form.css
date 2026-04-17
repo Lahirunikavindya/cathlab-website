@@ -1,0 +1,104 @@
+input,
+textarea,
+select {
+  width: 100%;
+  border: 1px solid #cddded;
+  border-radius: 8px;
+  padding: 10px 12px;
+  font: inherit;
+  background: #fff;
+}
+
+button {
+  border: none;
+  border-radius: 8px;
+  background: #1769aa;
+  color: #fff;
+  padding: 10px 14px;
+  font: inherit;
+  cursor: pointer;
+}
+
+button:hover {
+  opacity: 0.95;
+}
+
+.btn-secondary {
+  background: #edf4fb;
+  color: #1b466c;
+}
+
+.form-card,
+.section-card {
+  background: #fff;
+  border: 1px solid #dbe7f3;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 8px 20px rgba(18, 68, 114, 0.08);
+  margin-bottom: 14px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.form-grid textarea,
+.button-row {
+  grid-column: 1 / -1;
+}
+
+.button-row {
+  display: flex;
+  gap: 8px;
+}
+
+.message {
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin-bottom: 10px;
+}
+
+.msg-error {
+  background: #ffe6e6;
+  color: #912626;
+}
+
+.msg-success {
+  background: #e4f7ea;
+  color: #256c3b;
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.modal-panel {
+  width: min(520px, 92%);
+  background: #fff;
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.modal-panel h3 {
+  margin: 0 0 4px;
+}
+
+.modal-subtitle {
+  margin: 0 0 12px;
+  color: #5d6e80;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 800px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+}
