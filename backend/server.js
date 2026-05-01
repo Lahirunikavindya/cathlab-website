@@ -3,6 +3,7 @@ const cors = require("cors");
 const dotenv = require("dotenv");
 const connectDB = require("./config/db");
 const itemRoutes = require("./routes/itemRoutes");
+const usageRoutes = require("./routes/usageRoutes");
 const errorHandler = require("./middleware/errorHandler");
 
 dotenv.config();
@@ -18,6 +19,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/items", itemRoutes);
+app.use("/api/usage", usageRoutes);
 
 app.use((req, res) => {
   res.status(404).json({ message: "API route not found." });

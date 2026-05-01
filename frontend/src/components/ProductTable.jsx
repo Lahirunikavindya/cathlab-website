@@ -1,6 +1,23 @@
 function formatDate(dateValue) {
-  if (!dateValue) return "-";
-  return new Date(dateValue).toLocaleDateString();
+  if (!dateValue) return "—";
+  return new Date(dateValue).toLocaleDateString("en-GB", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
+}
+
+function isExpired(dateValue) {
+  if (!dateValue) return false;
+  return new Date(dateValue) < new Date();
+}
+
+function isNearExpiry(dateValue) {
+  if (!dateValue) return false;
+  const d = new Date(dateValue);
+  const now = new Date();
+  const diff = (d - now) / (1000 * 60 * 60 * 24);
+  return diff >= 0 && diff <= 7;
 }
 
 function ProductTable({
@@ -14,13 +31,18 @@ function ProductTable({
     return (
       <div className="loading-box">
         <div className="spinner" />
-        <p>Loading...</p>
+        <p>Loading items…</p>
       </div>
     );
   }
 
-  if (!items.length) {
-    return <div className="empty-box">{emptyMessage}</div>;
+  if (!items || !items.length) {
+    return (
+      <div className="empty-box">
+        <span className="empty-box-icon">📦</span>
+        <p>{emptyMessage}</p>
+      </div>
+    );
   }
 
   return (
@@ -37,23 +59,41 @@ function ProductTable({
           </tr>
         </thead>
         <tbody>
-          {items.map((item) => (
-            <tr key={item._id}>
-              <td>{item.itemName}</td>
-              <td>{item.category}</td>
-              <td className={showLowStockBadge ? "danger-text" : ""}>
-                {item.quantity}
-                {showLowStockBadge && <span className="badge badge-red">LOW STOCK</span>}
-                {badgeType === "expired" && <span className="badge badge-red">EXPIRED</span>}
-                {badgeType === "nearExpiry" && (
-                  <span className="badge badge-orange">EXPIRING SOON</span>
-                )}
-              </td>
-              <td>{item.batchNumber}</td>
-              <td>{formatDate(item.expiryDate)}</td>
-              <td>{item.note || "-"}</td>
-            </tr>
-          ))}
+          {items.map((item) => {
+            const expired   = isExpired(item.expiryDate);
+            const nearExpiry = isNearExpiry(item.expiryDate);
+            const lowStock  = item.quantity < 3;
+
+            return (
+              <tr key={item._id}>
+                <td style={{ fontWeight: 500 }}>{item.itemName}</td>
+                <td>
+                  <span className="badge badge-blue">{item.category}</span>
+                </td>
+                <td className={lowStock || showLowStockBadge ? "danger-text" : ""}>
+                  {item.quantity}
+                  {(showLowStockBadge || lowStock) && (
+                    <span className="badge badge-red">LOW</span>
+                  )}
+                </td>
+                <td style={{ fontFamily: "monospace", fontSize: "0.85rem" }}>
+                  {item.batchNumber}
+                </td>
+                <td>
+                  <span style={expired ? { color: "var(--danger)", fontWeight: 600 } : nearExpiry ? { color: "var(--warning)", fontWeight: 600 } : {}}>
+                    {formatDate(item.expiryDate)}
+                  </span>
+                  {badgeType === "expired"   && <span className="badge badge-red">EXPIRED</span>}
+                  {(badgeType === "nearExpiry" || nearExpiry) && !expired && (
+                    <span className="badge badge-orange">SOON</span>
+                  )}
+                </td>
+                <td style={{ color: "var(--text-secondary)", fontSize: "0.88rem" }}>
+                  {item.note || "—"}
+                </td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
     </div>

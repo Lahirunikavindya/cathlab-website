@@ -11,6 +11,7 @@ const {
   useItem,
   sellItem,
 } = require("../controllers/itemController");
+const { recordUsage } = require("../controllers/usageController");
 
 const router = express.Router();
 
@@ -27,5 +28,8 @@ router.put("/:id", updateItem);
 router.delete("/:id", deleteItem);
 router.patch("/:id/use", useItem);
 router.patch("/:id/sell", sellItem);
+
+// ── Record Usage (new) ───────────────────────────────────────────────────────
+router.post("/:id/usage", recordUsage);
 
 module.exports = router;

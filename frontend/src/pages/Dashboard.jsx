@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { getAllItems } from "../api/items";
 import ProductTable from "../components/ProductTable";
 import SearchBar from "../components/SearchBar";
-import SellProductModal from "../components/SellProductModal";
+import RecordUsageModal from "../components/RecordUsageModal";
 
 function Dashboard() {
   const navigate = useNavigate();
@@ -11,7 +11,7 @@ function Dashboard() {
   const [displayItems, setDisplayItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState({ type: "", text: "" });
-  const [sellOpen, setSellOpen] = useState(false);
+  const [usageOpen, setUsageOpen] = useState(false);
 
   const loadItems = useCallback(async () => {
     try {
@@ -19,8 +19,8 @@ function Dashboard() {
       const data = await getAllItems();
       setItems(data);
       setDisplayItems(data);
-    } catch (error) {
-      setMessage({ type: "error", text: "Failed to load products." });
+    } catch {
+      setMessage({ type: "error", text: "Failed to load inventory. Is the server running?" });
     } finally {
       setLoading(false);
     }
@@ -30,38 +30,89 @@ function Dashboard() {
     loadItems();
   }, [loadItems]);
 
+  // Auto-clear success messages after 4 seconds
+  useEffect(() => {
+    if (message.type === "success") {
+      const t = setTimeout(() => setMessage({ type: "", text: "" }), 4000);
+      return () => clearTimeout(t);
+    }
+  }, [message]);
+
+  const lowStockCount = items.filter((i) => i.quantity < 3).length;
+
   return (
     <div className="page">
-      <div className="page-header">
-        <h1>Cath Lab Inventory</h1>
-      </div>
-
+      {/* ── Action buttons ── */}
       <div className="actions-row">
-        <button onClick={() => navigate("/add-item")}>Add Item</button>
-        <button onClick={() => navigate("/low-stock")}>Low Stock</button>
-        <button onClick={() => navigate("/expiry-items")}>Expiry Items</button>
-        <button onClick={() => setSellOpen(true)}>Sell Product</button>
+        <button id="btn-add-item" onClick={() => navigate("/add-item")}>
+          ＋ Add Item
+        </button>
+        <button
+          id="btn-low-stock"
+          className="btn-secondary"
+          onClick={() => navigate("/low-stock")}
+        >
+          ⚠️ Low Stock
+          {lowStockCount > 0 && (
+            <span
+              style={{
+                marginLeft: 6,
+                background: "var(--danger)",
+                color: "#fff",
+                borderRadius: 999,
+                padding: "1px 7px",
+                fontSize: "0.72rem",
+              }}
+            >
+              {lowStockCount}
+            </span>
+          )}
+        </button>
+        <button
+          id="btn-expiry"
+          className="btn-secondary"
+          onClick={() => navigate("/expiry-items")}
+        >
+          📅 Expiry Items
+        </button>
+        <button
+          id="btn-record-usage"
+          className="btn-success"
+          onClick={() => setUsageOpen(true)}
+        >
+          📋 Record Usage
+        </button>
+        <button
+          id="btn-usage-history"
+          className="btn-secondary"
+          onClick={() => navigate("/usage-history")}
+        >
+          🕒 View Used Items
+        </button>
       </div>
 
-      <SearchBar
-        onSelectItem={(item) => setDisplayItems([item])}
-        onClearSelection={() => setDisplayItems(items)}
-      />
-
+      {/* ── Inline message ── */}
       {message.text && (
         <div className={`message ${message.type === "error" ? "msg-error" : "msg-success"}`}>
           {message.text}
         </div>
       )}
 
+      {/* ── Search + table ── */}
+      <div className="section-title">All Inventory Items</div>
+      <SearchBar
+        onSelectItem={(item) => setDisplayItems([item])}
+        onClearSelection={() => setDisplayItems(items)}
+      />
       <ProductTable items={displayItems} loading={loading} />
 
-      <SellProductModal
-        open={sellOpen}
+      {/* ── Record Usage Modal ── */}
+      <RecordUsageModal
+        open={usageOpen}
         items={items}
-        onClose={() => setSellOpen(false)}
+        onClose={() => setUsageOpen(false)}
         onSuccess={async () => {
-          setMessage({ type: "success", text: "Product sold and quantity updated." });
+          setMessage({ type: "success", text: "✔ Usage recorded and inventory updated." });
           await loadItems();
         }}
       />

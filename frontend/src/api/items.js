@@ -53,11 +53,20 @@ export function searchItems(q) {
   return request(`${API_BASE_URL}/api/items/search?q=${encodeURIComponent(q)}`);
 }
 
-// Sell: reduce quantity when a product is sold
+// Legacy sell (kept for backward compatibility)
 export function sellItem(id, soldQuantity) {
   return request(`${API_BASE_URL}/api/items/${id}/sell`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ soldQuantity }),
+  });
+}
+
+// Record usage: reduces quantity + saves a usage history record
+export function recordUsage(id, usedQuantity, note = "") {
+  return request(`${API_BASE_URL}/api/items/${id}/usage`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ usedQuantity, note }),
   });
 }

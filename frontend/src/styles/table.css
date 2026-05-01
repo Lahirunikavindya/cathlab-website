@@ -1,73 +1,105 @@
+/* ============================================================
+   TABLE CSS
+   ============================================================ */
+
 .table-wrapper {
   overflow-x: auto;
-  border: 1px solid #dce8f4;
-  border-radius: 10px;
-  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
 }
 
 .product-table {
   width: 100%;
   border-collapse: collapse;
+  font-size: 0.9rem;
 }
 
 .product-table thead {
-  background: #f4f8fc;
+  background: #f5f8fd;
+  border-bottom: 2px solid var(--border);
 }
 
-.product-table th,
-.product-table td {
+.product-table th {
   text-align: left;
-  padding: 10px 12px;
-  border-bottom: 1px solid #edf2f7;
+  padding: 12px 16px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--text-secondary);
   white-space: nowrap;
 }
 
-.product-table tbody tr:hover {
-  background: #f8fbff;
+.product-table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid #eef2f8;
+  color: var(--text-primary);
+  white-space: nowrap;
 }
 
+.product-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.product-table tbody tr {
+  transition: background 0.12s;
+}
+
+.product-table tbody tr:hover {
+  background: #f8fafd;
+}
+
+/* ── Badges ───────────────────────────────────────────────── */
 .badge {
+  display: inline-block;
   margin-left: 8px;
   border-radius: 999px;
-  padding: 2px 8px;
-  font-size: 0.72rem;
+  padding: 2px 9px;
+  font-size: 0.7rem;
   font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 
-.badge-red {
-  background: #c0392b;
-  color: #fff;
-}
-
-.badge-orange {
-  background: #db8a13;
-  color: #fff;
-}
+.badge-red    { background: #fee2e2; color: #b91c1c; }
+.badge-orange { background: #fef3c7; color: #92400e; }
+.badge-green  { background: #dcfce7; color: #166534; }
+.badge-blue   { background: #dbeafe; color: #1e40af; }
 
 .danger-text {
-  color: #b02d2d;
-  font-weight: 700;
+  color: var(--danger);
+  font-weight: 600;
 }
 
+/* ── Loading / empty states ──────────────────────────────── */
 .loading-box,
 .empty-box {
-  padding: 20px;
+  padding: 48px 24px;
   text-align: center;
-  color: #5f7388;
+  color: var(--text-muted);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.empty-box-icon {
+  font-size: 2.4rem;
+  opacity: 0.5;
 }
 
 .spinner {
-  width: 28px;
-  height: 28px;
-  margin: 0 auto 8px;
-  border: 3px solid #dbe8f5;
-  border-top: 3px solid #1d6eaf;
+  width: 32px;
+  height: 32px;
+  margin: 0 auto 6px;
+  border: 3px solid var(--border);
+  border-top-color: var(--primary);
   border-radius: 50%;
-  animation: spin 0.8s linear infinite;
+  animation: spin 0.75s linear infinite;
 }
 
 @keyframes spin {
-  100% {
-    transform: rotate(360deg);
-  }
+  100% { transform: rotate(360deg); }
 }

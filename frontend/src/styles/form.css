@@ -1,104 +1,233 @@
+/* ============================================================
+   FORM + BUTTON + MODAL CSS
+   ============================================================ */
+
+/* ── Inputs / Textarea / Select ──────────────────────────── */
 input,
 textarea,
 select {
   width: 100%;
-  border: 1px solid #cddded;
-  border-radius: 8px;
-  padding: 10px 12px;
-  font: inherit;
-  background: #fff;
-}
-
-button {
-  border: none;
-  border-radius: 8px;
-  background: #1769aa;
-  color: #fff;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
   padding: 10px 14px;
   font: inherit;
-  cursor: pointer;
+  font-size: 0.92rem;
+  background: var(--surface);
+  color: var(--text-primary);
+  transition: border-color 0.15s, box-shadow 0.15s;
+  outline: none;
 }
 
-button:hover {
-  opacity: 0.95;
+input::placeholder,
+textarea::placeholder {
+  color: var(--text-muted);
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(26, 111, 196, 0.12);
+}
+
+/* ── Buttons ─────────────────────────────────────────────── */
+button {
+  border: none;
+  border-radius: var(--radius);
+  background: var(--primary);
+  color: #fff;
+  padding: 10px 18px;
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, box-shadow 0.15s, transform 0.1s;
+}
+
+button:hover:not(:disabled) {
+  background: var(--primary-dark);
+  box-shadow: 0 4px 12px rgba(26,111,196,0.25);
+  transform: translateY(-1px);
+}
+
+button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
 }
 
 .btn-secondary {
-  background: #edf4fb;
-  color: #1b466c;
+  background: #f0f4f9;
+  color: var(--text-secondary);
+  border: 1.5px solid var(--border);
 }
 
-.form-card,
-.section-card {
-  background: #fff;
-  border: 1px solid #dbe7f3;
-  border-radius: 12px;
-  padding: 16px;
-  box-shadow: 0 8px 20px rgba(18, 68, 114, 0.08);
-  margin-bottom: 14px;
+.btn-secondary:hover:not(:disabled) {
+  background: #e4eaf4;
+  box-shadow: none;
+  color: var(--text-primary);
 }
 
+.btn-danger {
+  background: var(--danger);
+}
+
+.btn-danger:hover:not(:disabled) {
+  background: #b91c1c;
+  box-shadow: 0 4px 12px rgba(220,38,38,0.25);
+}
+
+.btn-success {
+  background: var(--accent);
+}
+
+.btn-success:hover:not(:disabled) {
+  background: #0a7a6e;
+  box-shadow: 0 4px 12px rgba(13,148,136,0.25);
+}
+
+.btn-sm {
+  padding: 7px 12px;
+  font-size: 0.82rem;
+}
+
+/* ── Form card / section card ────────────────────────────── */
+.form-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 28px 24px;
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 20px;
+}
+
+.form-card h2 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 18px;
+  color: var(--text-primary);
+}
+
+/* ── Form grid layout ────────────────────────────────────── */
 .form-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
+  gap: 14px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.form-group label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  letter-spacing: 0.03em;
 }
 
 .form-grid textarea,
+.form-full,
 .button-row {
   grid-column: 1 / -1;
 }
 
 .button-row {
   display: flex;
-  gap: 8px;
+  gap: 10px;
+  flex-wrap: wrap;
 }
 
-.message {
-  border-radius: 8px;
-  padding: 10px 12px;
-  margin-bottom: 10px;
-}
-
-.msg-error {
-  background: #ffe6e6;
-  color: #912626;
-}
-
-.msg-success {
-  background: #e4f7ea;
-  color: #256c3b;
-}
-
+/* ── Modal ───────────────────────────────────────────────── */
 .modal-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.35);
+  background: rgba(10, 25, 47, 0.45);
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 10;
+  z-index: 200;
+  padding: 16px;
+  backdrop-filter: blur(2px);
+  animation: fadeIn 0.15s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
 
 .modal-panel {
-  width: min(520px, 92%);
-  background: #fff;
-  border-radius: 12px;
-  padding: 16px;
+  width: min(540px, 100%);
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+  padding: 28px 24px 24px;
+  box-shadow: var(--shadow-lg);
+  animation: slideUp 0.2s ease;
 }
 
-.modal-panel h3 {
-  margin: 0 0 4px;
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+
+.modal-header h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-primary);
 }
 
 .modal-subtitle {
-  margin: 0 0 12px;
-  color: #5d6e80;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin-top: 3px;
 }
 
-@media (max-width: 800px) {
-  .form-grid {
-    grid-template-columns: 1fr;
-  }
+.modal-close-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 1.3rem;
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  line-height: 1;
+}
+
+.modal-close-btn:hover {
+  background: var(--primary-light);
+  color: var(--primary);
+  transform: none;
+  box-shadow: none;
+}
+
+/* ── Inline alerts ───────────────────────────────────────── */
+.message {
+  border-radius: var(--radius);
+  padding: 11px 14px;
+  margin-bottom: 14px;
+  font-size: 0.88rem;
+  font-weight: 500;
+}
+
+.msg-error   { background: var(--danger-light);  color: #991b1b; border-left: 3px solid var(--danger);  }
+.msg-success { background: var(--success-light); color: #166534; border-left: 3px solid var(--success); }
+
+/* ── Responsive ──────────────────────────────────────────── */
+@media (max-width: 640px) {
+  .form-grid { grid-template-columns: 1fr; }
+  .form-card { padding: 20px 16px; }
+  .modal-panel { padding: 22px 16px 18px; }
 }

@@ -17,8 +17,8 @@ function ExpiryItems() {
         const data = await getExpiryItems();
         setExpired(data.expired || []);
         setNearExpiry(data.nearExpiry || []);
-      } catch (err) {
-        setError("Failed to load expiry items.");
+      } catch {
+        setError("Failed to load expiry items. Please check the server.");
       } finally {
         setLoading(false);
       }
@@ -29,33 +29,36 @@ function ExpiryItems() {
   return (
     <div className="page">
       <div className="page-header">
-        <h1>Expiry Items</h1>
+        <div className="page-header-text">
+          <h1>📅 Expiry Tracking</h1>
+          <p>Review expired items and items expiring within the next 7 days.</p>
+        </div>
         <button className="btn-secondary" onClick={() => navigate("/")}>
-          Back to Dashboard
+          ← Back to Dashboard
         </button>
       </div>
 
       {error && <div className="message msg-error">{error}</div>}
 
-      <section className="section-card">
-        <h2>Expired Items</h2>
+      <div className="section-card">
+        <h2>🔴 Expired Items</h2>
         <ProductTable
           items={expired}
           loading={loading}
-          emptyMessage="No expired items"
+          emptyMessage="✅ No expired items found."
           badgeType="expired"
         />
-      </section>
+      </div>
 
-      <section className="section-card">
-        <h2>Near Expiry Items</h2>
+      <div className="section-card">
+        <h2>🟡 Expiring Within 7 Days</h2>
         <ProductTable
           items={nearExpiry}
           loading={loading}
-          emptyMessage="No near expiry items"
+          emptyMessage="✅ No items expiring within 7 days."
           badgeType="nearExpiry"
         />
-      </section>
+      </div>
     </div>
   );
 }

@@ -1,0 +1,88 @@
+/* ============================================================
+   USAGE HISTORY PAGE CSS
+   ============================================================ */
+
+.usage-filter-row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.usage-filter-row input,
+.usage-filter-row select {
+  width: auto;
+  min-width: 180px;
+  flex: 1;
+  max-width: 280px;
+}
+
+/* ── Monthly summary bar ─────────────────────────────────── */
+.monthly-summary-bar {
+  background: linear-gradient(135deg, #1a6fc4 0%, #0d9488 100%);
+  border-radius: var(--radius-lg);
+  padding: 20px 24px;
+  color: #fff;
+  display: flex;
+  gap: 32px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+  box-shadow: var(--shadow);
+}
+
+.monthly-summary-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.monthly-summary-stat .stat-val {
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+
+.monthly-summary-stat .stat-lbl {
+  font-size: 0.78rem;
+  opacity: 0.85;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.monthly-summary-divider {
+  width: 1px;
+  background: rgba(255,255,255,0.25);
+  align-self: stretch;
+}
+
+/* ── Monthly history table ───────────────────────────────── */
+.monthly-history-section {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 24px;
+}
+
+.monthly-history-section h3 {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 14px;
+}
+
+.usage-page-note {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  margin-top: 10px;
+}
+
+@media (max-width: 640px) {
+  .monthly-summary-bar { gap: 20px; padding: 16px; }
+  .monthly-summary-divider { display: none; }
+  .usage-filter-row input,
+  .usage-filter-row select { max-width: 100%; }
+}

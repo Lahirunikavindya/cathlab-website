@@ -19,7 +19,7 @@ function SearchBar({ onSelectItem, onClearSelection }) {
         setLoading(true);
         const result = await searchItems(trimmed);
         setSuggestions(result);
-      } catch (error) {
+      } catch {
         setSuggestions([]);
       } finally {
         setLoading(false);
@@ -36,9 +36,9 @@ function SearchBar({ onSelectItem, onClearSelection }) {
         type="text"
         value={query}
         onChange={(e) => setQuery(e.target.value)}
-        placeholder="Search by item name or batch number..."
+        placeholder="Search by item name or batch number…"
       />
-      {loading && <div className="search-loading">Searching...</div>}
+      {loading && <div className="search-loading">Searching…</div>}
 
       {!loading && suggestions.length > 0 && (
         <ul className="suggestions-list">

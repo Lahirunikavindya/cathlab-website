@@ -5,7 +5,7 @@ import { createItem } from "../api/items";
 const initialForm = {
   itemName: "",
   category: "",
-  quantity: 0,
+  quantity: "",
   batchNumber: "",
   expiryDate: "",
   note: "",
@@ -21,7 +21,7 @@ function AddItem() {
     const { name, value } = e.target;
     setForm((prev) => ({
       ...prev,
-      [name]: name === "quantity" ? Number(value) : value,
+      [name]: name === "quantity" ? (value === "" ? "" : Number(value)) : value,
     }));
   };
 
@@ -33,14 +33,14 @@ function AddItem() {
       setMessage({ type: "error", text: "Please fill all required fields." });
       return;
     }
-    if (form.quantity < 0) {
-      setMessage({ type: "error", text: "Quantity cannot be negative." });
+    if (form.quantity === "" || Number(form.quantity) < 0) {
+      setMessage({ type: "error", text: "Quantity must be 0 or more." });
       return;
     }
 
     try {
       setLoading(true);
-      await createItem(form);
+      await createItem({ ...form, quantity: Number(form.quantity) });
       navigate("/");
     } catch (error) {
       setMessage({ type: "error", text: error.message });
@@ -52,7 +52,13 @@ function AddItem() {
   return (
     <div className="page">
       <div className="page-header">
-        <h1>Add Item</h1>
+        <div className="page-header-text">
+          <h1>Add Inventory Item</h1>
+          <p>Fill in the details below to add a new medical supply item.</p>
+        </div>
+        <button className="btn-secondary" onClick={() => navigate("/")}>
+          ← Back to Dashboard
+        </button>
       </div>
 
       <div className="form-card">
@@ -63,19 +69,85 @@ function AddItem() {
         )}
 
         <form onSubmit={onSubmit} className="form-grid">
-          <input name="itemName" placeholder="Item Name *" value={form.itemName} onChange={onChange} required />
-          <input name="category" placeholder="Category *" value={form.category} onChange={onChange} required />
-          <input type="number" min="0" name="quantity" placeholder="Quantity *" value={form.quantity} onChange={onChange} required />
-          <input name="batchNumber" placeholder="Batch Number *" value={form.batchNumber} onChange={onChange} required />
-          <input type="date" name="expiryDate" value={form.expiryDate} onChange={onChange} required />
-          <textarea name="note" placeholder="Note" value={form.note} onChange={onChange} rows="3" />
+          <div className="form-group">
+            <label htmlFor="itemName">Item Name *</label>
+            <input
+              id="itemName"
+              name="itemName"
+              placeholder="e.g. Coronary Guide Wire"
+              value={form.itemName}
+              onChange={onChange}
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="category">Category *</label>
+            <input
+              id="category"
+              name="category"
+              placeholder="e.g. Catheter, Stent, Balloon"
+              value={form.category}
+              onChange={onChange}
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="quantity">Initial Quantity *</label>
+            <input
+              id="quantity"
+              type="number"
+              min="0"
+              name="quantity"
+              placeholder="0"
+              value={form.quantity}
+              onChange={onChange}
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="batchNumber">Batch Number *</label>
+            <input
+              id="batchNumber"
+              name="batchNumber"
+              placeholder="e.g. BT-2024-001"
+              value={form.batchNumber}
+              onChange={onChange}
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="expiryDate">Expiry Date *</label>
+            <input
+              id="expiryDate"
+              type="date"
+              name="expiryDate"
+              value={form.expiryDate}
+              onChange={onChange}
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="note">Note (optional)</label>
+            <input
+              id="note"
+              name="note"
+              placeholder="Any additional notes…"
+              value={form.note}
+              onChange={onChange}
+            />
+          </div>
 
           <div className="button-row">
             <button type="submit" disabled={loading}>
-              {loading ? "Saving..." : "Save Item"}
+              {loading ? "Saving…" : "✔ Save Item"}
             </button>
             <button type="button" className="btn-secondary" onClick={() => navigate("/")}>
-              Back to Dashboard
+              Cancel
             </button>
           </div>
         </form>
