@@ -4,6 +4,11 @@ const dns = require("node:dns");
 const RETRY_MS = Number(process.env.DB_RETRY_MS || 10000);
 
 const connectDB = async () => {
+  if (mongoose.connection.readyState === 1) {
+    console.log("Using existing MongoDB connection");
+    return;
+  }
+
   try {
     const mongoUri = process.env.MONGODB_URI || process.env.MONGO_URI;
     if (!mongoUri) {
@@ -12,8 +17,8 @@ const connectDB = async () => {
 
     // Some networks block local DNS SRV lookups used by mongodb+srv.
     // Allow overriding resolvers so Atlas can still be reached.
-    if (mongoUri.startsWith("mongodb+srv://")) {
-      const dnsServers = (process.env.DNS_SERVERS || "8.8.8.8,1.1.1.1")
+    if (mongoUri.startsWith("mongodb+srv://") && process.env.DNS_SERVERS) {
+      const dnsServers = process.env.DNS_SERVERS
         .split(",")
         .map((entry) => entry.trim())
         .filter(Boolean);
@@ -26,6 +31,7 @@ const connectDB = async () => {
     const connection = await mongoose.connect(mongoUri, {
       serverSelectionTimeoutMS: 10000,
     });
+    
     console.log(`MongoDB connected: ${connection.connection.host}`);
   } catch (error) {
     console.error("Database connection failed:", error.message);
