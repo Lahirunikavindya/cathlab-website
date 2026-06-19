@@ -1,5 +1,5 @@
 const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL || "https://cathlab-website-production.up.railway.app";
+  import.meta.env.VITE_API_BASE_URL || "https://cathlab-website-a3sv.vercel.app";
 
 async function request(url, options = {}) {
   const response = await fetch(url, options);
