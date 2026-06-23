@@ -11,17 +11,24 @@ export async function apiRequest(url, options = {}) {
   }
 
   const contentType = response.headers.get("content-type") || "";
+  const isJson = contentType.includes("application/json");
   let data = null;
 
-  if (contentType.includes("application/json")) {
+  if (isJson) {
     data = await response.json();
-  } else if (!response.ok) {
-    throw new Error(`Server error (${response.status}). Please try again shortly.`);
   }
 
   if (!response.ok) {
-    throw new Error(data?.message || "Request failed.");
+    throw new Error(data?.message || `Server error (${response.status}). Please try again shortly.`);
+  }
+
+  if (!isJson) {
+    throw new Error("Unexpected server response. Please check the API URL configuration.");
   }
 
   return data;
+}
+
+export function asArray(data) {
+  return Array.isArray(data) ? data : [];
 }

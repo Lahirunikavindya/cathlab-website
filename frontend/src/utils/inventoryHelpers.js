@@ -23,6 +23,7 @@ export function getItems(inventoryGroup, category, subCategory) {
 }
 
 function getInStockItems(items) {
+  if (!Array.isArray(items)) return [];
   return items.filter((item) => item.quantity > 0);
 }
 

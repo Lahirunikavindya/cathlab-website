@@ -17,7 +17,7 @@ const initialSelection = {
   selectedId: "",
 };
 
-function RecordUsageModal({ open, items, onClose, onSuccess }) {
+function RecordUsageModal({ open, items = [], onClose, onSuccess }) {
   const [selection, setSelection] = useState(initialSelection);
   const [usedQuantity, setUsedQuantity] = useState("");
   const [note, setNote] = useState("");

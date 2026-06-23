@@ -42,7 +42,7 @@ function Dashboard() {
     }
   }, [message]);
 
-  const lowStockCount = items.filter((i) => i.quantity < 3).length;
+  const lowStockCount = (items ?? []).filter((i) => i.quantity < 3).length;
 
   return (
     <div className="page">
