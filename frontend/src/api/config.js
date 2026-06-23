@@ -1,5 +1,6 @@
-export const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL || "https://cathlab-backend.vercel.app";
+// Use same-origin /api paths. Vercel rewrites (production) and Vite proxy (local dev)
+// forward these requests to the backend — avoids wrong API URL env var issues.
+export const API_BASE_URL = "";
 
 export async function apiRequest(url, options = {}) {
   let response;
@@ -23,7 +24,7 @@ export async function apiRequest(url, options = {}) {
   }
 
   if (!isJson) {
-    throw new Error("Unexpected server response. Please check the API URL configuration.");
+    throw new Error("Unexpected server response. The API proxy may be misconfigured.");
   }
 
   return data;

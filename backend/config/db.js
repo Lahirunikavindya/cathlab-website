@@ -8,13 +8,15 @@ if (!cached) {
 }
 
 const connectDB = async () => {
-  if (cached.conn) {
-    return cached.conn;
+  if (mongoose.connection.readyState === 1) {
+    return mongoose.connection;
   }
 
   if (cached.promise) {
     return cached.promise;
   }
+
+  cached.conn = null;
 
   const mongoUri = process.env.MONGODB_URI || process.env.MONGO_URI;
   if (!mongoUri) {
@@ -34,8 +36,8 @@ const connectDB = async () => {
 
   cached.promise = mongoose
     .connect(mongoUri, {
-      serverSelectionTimeoutMS: 10000,
-      bufferCommands: false,
+      serverSelectionTimeoutMS: 15000,
+      maxPoolSize: 10,
     })
     .then((connection) => {
       console.log(`MongoDB connected: ${connection.connection.host}`);
@@ -44,6 +46,7 @@ const connectDB = async () => {
     })
     .catch((error) => {
       cached.promise = null;
+      cached.conn = null;
       console.error("Database connection failed:", error.message);
       if (String(error.message || "").includes("querySrv ECONNREFUSED")) {
         console.error(
