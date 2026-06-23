@@ -1,48 +1,59 @@
 const mongoose = require("mongoose");
 const dns = require("node:dns");
 
-const RETRY_MS = Number(process.env.DB_RETRY_MS || 10000);
+let cached = global.mongoose;
+
+if (!cached) {
+  cached = global.mongoose = { conn: null, promise: null };
+}
 
 const connectDB = async () => {
-  if (mongoose.connection.readyState === 1) {
-    console.log("Using existing MongoDB connection");
-    return;
+  if (cached.conn) {
+    return cached.conn;
   }
 
-  try {
-    const mongoUri = process.env.MONGODB_URI || process.env.MONGO_URI;
-    if (!mongoUri) {
-      throw new Error("Missing MONGODB_URI (or MONGO_URI) in environment variables");
+  if (cached.promise) {
+    return cached.promise;
+  }
+
+  const mongoUri = process.env.MONGODB_URI || process.env.MONGO_URI;
+  if (!mongoUri) {
+    throw new Error("Missing MONGODB_URI (or MONGO_URI) in environment variables");
+  }
+
+  if (mongoUri.startsWith("mongodb+srv://") && process.env.DNS_SERVERS) {
+    const dnsServers = process.env.DNS_SERVERS
+      .split(",")
+      .map((entry) => entry.trim())
+      .filter(Boolean);
+
+    if (dnsServers.length > 0) {
+      dns.setServers(dnsServers);
     }
+  }
 
-    // Some networks block local DNS SRV lookups used by mongodb+srv.
-    // Allow overriding resolvers so Atlas can still be reached.
-    if (mongoUri.startsWith("mongodb+srv://") && process.env.DNS_SERVERS) {
-      const dnsServers = process.env.DNS_SERVERS
-        .split(",")
-        .map((entry) => entry.trim())
-        .filter(Boolean);
-
-      if (dnsServers.length > 0) {
-        dns.setServers(dnsServers);
-      }
-    }
-
-    const connection = await mongoose.connect(mongoUri, {
+  cached.promise = mongoose
+    .connect(mongoUri, {
       serverSelectionTimeoutMS: 10000,
+      bufferCommands: false,
+    })
+    .then((connection) => {
+      console.log(`MongoDB connected: ${connection.connection.host}`);
+      cached.conn = connection;
+      return connection;
+    })
+    .catch((error) => {
+      cached.promise = null;
+      console.error("Database connection failed:", error.message);
+      if (String(error.message || "").includes("querySrv ECONNREFUSED")) {
+        console.error(
+          "Tip: If SRV DNS fails on your network, use Atlas standard URI (mongodb://...) or set DNS_SERVERS in backend/.env"
+        );
+      }
+      throw error;
     });
-    
-    console.log(`MongoDB connected: ${connection.connection.host}`);
-  } catch (error) {
-    console.error("Database connection failed:", error.message);
-    if (String(error.message || "").includes("querySrv ECONNREFUSED")) {
-      console.error(
-        "Tip: If SRV DNS fails on your network, use Atlas standard URI (mongodb://...) or set DNS_SERVERS in backend/.env"
-      );
-    }
-    console.log(`Retrying MongoDB connection in ${RETRY_MS / 1000}s...`);
-    setTimeout(connectDB, RETRY_MS);
-  }
+
+  return cached.promise;
 };
 
 module.exports = connectDB;

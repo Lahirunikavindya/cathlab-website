@@ -2,12 +2,12 @@ const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv");
 const connectDB = require("./config/db");
+const ensureDb = require("./middleware/ensureDb");
 const itemRoutes = require("./routes/itemRoutes");
 const usageRoutes = require("./routes/usageRoutes");
 const errorHandler = require("./middleware/errorHandler");
 
 dotenv.config();
-connectDB();
 
 const app = express();
 
@@ -18,8 +18,12 @@ app.get("/", (req, res) => {
   res.status(200).json({ message: "Cath Lab backend is running." });
 });
 
-app.use("/api/items", itemRoutes);
-app.use("/api/usage", usageRoutes);
+app.get("/api/health", ensureDb, (req, res) => {
+  res.status(200).json({ status: "ok", database: "connected" });
+});
+
+app.use("/api/items", ensureDb, itemRoutes);
+app.use("/api/usage", ensureDb, usageRoutes);
 
 app.use((req, res) => {
   res.status(404).json({ message: "API route not found." });

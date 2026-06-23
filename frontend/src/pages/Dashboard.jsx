@@ -16,11 +16,15 @@ function Dashboard() {
   const loadItems = useCallback(async () => {
     try {
       setLoading(true);
+      setMessage({ type: "", text: "" });
       const data = await getAllItems();
       setItems(data);
       setDisplayItems(data);
-    } catch {
-      setMessage({ type: "error", text: "Failed to load inventory. Is the server running?" });
+    } catch (error) {
+      setMessage({
+        type: "error",
+        text: error.message || "Failed to load inventory. Is the server running?",
+      });
     } finally {
       setLoading(false);
     }
