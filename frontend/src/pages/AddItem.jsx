@@ -1,10 +1,19 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { createItem } from "../api/items";
+import InventorySelect from "../components/InventorySelect";
+import {
+  getCategories,
+  getInventoryGroups,
+  getItems,
+  getSubCategories,
+} from "../utils/inventoryHelpers";
 
 const initialForm = {
-  itemName: "",
+  inventoryGroup: "",
   category: "",
+  subCategory: "",
+  itemName: "",
   quantity: "",
   batchNumber: "",
   expiryDate: "",
@@ -16,6 +25,44 @@ function AddItem() {
   const [form, setForm] = useState(initialForm);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState({ type: "", text: "" });
+
+  const inventoryGroups = useMemo(() => getInventoryGroups(), []);
+  const categories = useMemo(
+    () => (form.inventoryGroup ? getCategories(form.inventoryGroup) : []),
+    [form.inventoryGroup]
+  );
+  const subCategories = useMemo(
+    () =>
+      form.inventoryGroup && form.category
+        ? getSubCategories(form.inventoryGroup, form.category)
+        : [],
+    [form.inventoryGroup, form.category]
+  );
+  const items = useMemo(
+    () =>
+      form.inventoryGroup && form.category && form.subCategory
+        ? getItems(form.inventoryGroup, form.category, form.subCategory)
+        : [],
+    [form.inventoryGroup, form.category, form.subCategory]
+  );
+
+  const onInventoryChange = (e) => {
+    const { name, value } = e.target;
+    setForm((prev) => {
+      const next = { ...prev, [name]: value };
+      if (name === "inventoryGroup") {
+        next.category = "";
+        next.subCategory = "";
+        next.itemName = "";
+      } else if (name === "category") {
+        next.subCategory = "";
+        next.itemName = "";
+      } else if (name === "subCategory") {
+        next.itemName = "";
+      }
+      return next;
+    });
+  };
 
   const onChange = (e) => {
     const { name, value } = e.target;
@@ -29,7 +76,14 @@ function AddItem() {
     e.preventDefault();
     setMessage({ type: "", text: "" });
 
-    if (!form.itemName || !form.category || !form.batchNumber || !form.expiryDate) {
+    if (
+      !form.inventoryGroup ||
+      !form.category ||
+      !form.subCategory ||
+      !form.itemName ||
+      !form.batchNumber ||
+      !form.expiryDate
+    ) {
       setMessage({ type: "error", text: "Please fill all required fields." });
       return;
     }
@@ -54,7 +108,7 @@ function AddItem() {
       <div className="page-header">
         <div className="page-header-text">
           <h1>Add Inventory Item</h1>
-          <p>Fill in the details below to add a new medical supply item.</p>
+          <p>Select from the structured cath lab inventory catalog, then enter stock details.</p>
         </div>
         <button className="btn-secondary" onClick={() => navigate("/")}>
           ← Back to Dashboard
@@ -69,29 +123,45 @@ function AddItem() {
         )}
 
         <form onSubmit={onSubmit} className="form-grid">
-          <div className="form-group">
-            <label htmlFor="itemName">Item Name *</label>
-            <input
-              id="itemName"
-              name="itemName"
-              placeholder="e.g. Coronary Guide Wire"
-              value={form.itemName}
-              onChange={onChange}
-              required
-            />
-          </div>
+          <InventorySelect
+            id="inventoryGroup"
+            label="Inventory Group *"
+            value={form.inventoryGroup}
+            onChange={onInventoryChange}
+            options={inventoryGroups}
+            disabled={false}
+            placeholder="— Select inventory group —"
+          />
 
-          <div className="form-group">
-            <label htmlFor="category">Category *</label>
-            <input
-              id="category"
-              name="category"
-              placeholder="e.g. Catheter, Stent, Balloon"
-              value={form.category}
-              onChange={onChange}
-              required
-            />
-          </div>
+          <InventorySelect
+            id="category"
+            label="Category *"
+            value={form.category}
+            onChange={onInventoryChange}
+            options={categories}
+            disabled={!form.inventoryGroup}
+            placeholder="— Select category —"
+          />
+
+          <InventorySelect
+            id="subCategory"
+            label="Sub Category *"
+            value={form.subCategory}
+            onChange={onInventoryChange}
+            options={subCategories}
+            disabled={!form.category}
+            placeholder="— Select sub category —"
+          />
+
+          <InventorySelect
+            id="itemName"
+            label="Item Name *"
+            value={form.itemName}
+            onChange={onInventoryChange}
+            options={items}
+            disabled={!form.subCategory}
+            placeholder="— Select item —"
+          />
 
           <div className="form-group">
             <label htmlFor="quantity">Initial Quantity *</label>

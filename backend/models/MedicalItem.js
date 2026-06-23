@@ -2,14 +2,24 @@ const mongoose = require("mongoose");
 
 const medicalItemSchema = new mongoose.Schema(
   {
-    itemName: {
+    inventoryGroup: {
       type: String,
-      required: [true, "Item name is required."],
       trim: true,
+      default: "",
     },
     category: {
       type: String,
       required: [true, "Category is required."],
+      trim: true,
+    },
+    subCategory: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+    itemName: {
+      type: String,
+      required: [true, "Item name is required."],
       trim: true,
     },
     quantity: {

@@ -9,11 +9,23 @@ const LOW_STOCK_THRESHOLD = 3;
 const addItem = async (req, res, next) => {
   try {
     // Strip out any fields the form might accidentally send that we don't want
-    const { itemName, category, quantity, unitPrice, batchNumber, expiryDate, note } = req.body;
+    const {
+      inventoryGroup,
+      category,
+      subCategory,
+      itemName,
+      quantity,
+      unitPrice,
+      batchNumber,
+      expiryDate,
+      note,
+    } = req.body;
 
     const item = await MedicalItem.create({
-      itemName,
+      inventoryGroup: inventoryGroup || "",
       category,
+      subCategory: subCategory || "",
+      itemName,
       quantity,
       unitPrice,
       batchNumber,
@@ -39,6 +51,8 @@ const getAllItems = async (req, res, next) => {
           $or: [
             { itemName: { $regex: search, $options: "i" } },
             { category: { $regex: search, $options: "i" } },
+            { subCategory: { $regex: search, $options: "i" } },
+            { inventoryGroup: { $regex: search, $options: "i" } },
             { batchNumber: { $regex: search, $options: "i" } },
           ],
         }
@@ -135,11 +149,31 @@ const updateItem = async (req, res, next) => {
       return res.status(400).json({ message: "Invalid item ID." });
     }
 
-    const { itemName, category, quantity, unitPrice, batchNumber, expiryDate, note } = req.body;
+    const {
+      inventoryGroup,
+      category,
+      subCategory,
+      itemName,
+      quantity,
+      unitPrice,
+      batchNumber,
+      expiryDate,
+      note,
+    } = req.body;
 
     const updatedItem = await MedicalItem.findByIdAndUpdate(
       id,
-      { itemName, category, quantity, unitPrice, batchNumber, expiryDate, note: note || "" },
+      {
+        inventoryGroup: inventoryGroup || "",
+        category,
+        subCategory: subCategory || "",
+        itemName,
+        quantity,
+        unitPrice,
+        batchNumber,
+        expiryDate,
+        note: note || "",
+      },
       { new: true, runValidators: true }
     );
 

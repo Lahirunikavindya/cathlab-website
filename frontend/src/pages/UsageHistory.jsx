@@ -50,14 +50,6 @@ function UsageHistory() {
     return () => clearTimeout(t);
   }, [loadData]);
 
-  // Current month stats
-  const now = new Date();
-  const currentMonthData = monthly.find(
-    (m) => m.year === now.getFullYear() && m.month === now.getMonth() + 1
-  );
-  const currentMonthUnits   = currentMonthData?.totalUsedQuantity  ?? 0;
-  const currentMonthRecords = currentMonthData?.numberOfUsageRecords ?? 0;
-
   // Filter by month if selected
   const filteredRecords = filterMonth
     ? records.filter((r) => {
@@ -80,24 +72,6 @@ function UsageHistory() {
       </div>
 
       {error && <div className="message msg-error">{error}</div>}
-
-      {/* ── Current month summary bar ── */}
-      <div className="monthly-summary-bar">
-        <div className="monthly-summary-stat">
-          <span className="stat-val">{currentMonthUnits}</span>
-          <span className="stat-lbl">Units Used This Month</span>
-        </div>
-        <div className="monthly-summary-divider" />
-        <div className="monthly-summary-stat">
-          <span className="stat-val">{currentMonthRecords}</span>
-          <span className="stat-lbl">Records This Month</span>
-        </div>
-        <div className="monthly-summary-divider" />
-        <div className="monthly-summary-stat">
-          <span className="stat-val">{records.length}</span>
-          <span className="stat-lbl">Total Records All Time</span>
-        </div>
-      </div>
 
       {/* ── Monthly breakdown ── */}
       {monthly.length > 0 && (

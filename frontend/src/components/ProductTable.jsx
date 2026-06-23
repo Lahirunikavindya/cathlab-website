@@ -20,6 +20,12 @@ function isNearExpiry(dateValue) {
   return diff >= 0 && diff <= 7;
 }
 
+function formatInventoryPath(item) {
+  const parts = [item.inventoryGroup, item.category, item.subCategory].filter(Boolean);
+  if (parts.length > 1) return parts.join(" › ");
+  return item.category || "—";
+}
+
 function ProductTable({
   items,
   loading,
@@ -68,7 +74,7 @@ function ProductTable({
               <tr key={item._id}>
                 <td style={{ fontWeight: 500 }}>{item.itemName}</td>
                 <td>
-                  <span className="badge badge-blue">{item.category}</span>
+                  <span className="badge badge-blue">{formatInventoryPath(item)}</span>
                 </td>
                 <td className={lowStock || showLowStockBadge ? "danger-text" : ""}>
                   {item.quantity}
