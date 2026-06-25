@@ -76,3 +76,42 @@ export function getStockRecords(items, inventoryGroup, category, subCategory, it
       item.itemName === itemName
   );
 }
+
+function getCatalogItemNames(inventoryGroup, category, subCategory, itemName) {
+  if (itemName) return [itemName];
+  if (subCategory) return getItems(inventoryGroup, category, subCategory);
+  if (category) {
+    return getSubCategories(inventoryGroup, category).flatMap((sub) =>
+      getItems(inventoryGroup, category, sub)
+    );
+  }
+  return getCategories(inventoryGroup).flatMap((cat) =>
+    getSubCategories(inventoryGroup, cat).flatMap((sub) =>
+      getItems(inventoryGroup, cat, sub)
+    )
+  );
+}
+
+export function filterUsageRecords(records, { inventoryGroup, category, subCategory, itemName }) {
+  if (!Array.isArray(records) || !inventoryGroup) return records ?? [];
+
+  const allowedNames = getCatalogItemNames(inventoryGroup, category, subCategory, itemName);
+
+  return records.filter((record) => {
+    if (record.inventoryGroup) {
+      if (record.inventoryGroup !== inventoryGroup) return false;
+      if (category && record.category && record.category !== category) return false;
+      if (subCategory && record.subCategory && record.subCategory !== subCategory) return false;
+      if (itemName && record.itemName !== itemName) return false;
+      return true;
+    }
+
+    return allowedNames.includes(record.itemName);
+  });
+}
+
+export function formatInventoryPath(record) {
+  const parts = [record.inventoryGroup, record.category, record.subCategory].filter(Boolean);
+  if (parts.length > 0) return parts.join(" › ");
+  return "—";
+}

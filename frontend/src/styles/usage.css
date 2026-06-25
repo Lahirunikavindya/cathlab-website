@@ -10,12 +10,38 @@
   margin-bottom: 20px;
 }
 
+.usage-filter-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 20px;
+}
+
+.usage-filter-hint {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin-bottom: 14px;
+}
+
+.usage-filter-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.usage-clear-btn {
+  margin-top: 14px;
+}
+
 .usage-filter-row input,
-.usage-filter-row select {
-  width: auto;
-  min-width: 180px;
-  flex: 1;
-  max-width: 280px;
+.usage-filter-row select,
+.usage-filter-grid input,
+.usage-filter-grid select {
+  width: 100%;
+  min-width: 0;
+  max-width: none;
 }
 
 /* ── Monthly history table ───────────────────────────────── */
@@ -42,6 +68,7 @@
 }
 
 @media (max-width: 640px) {
+  .usage-filter-grid { grid-template-columns: 1fr; }
   .usage-filter-row input,
   .usage-filter-row select { max-width: 100%; }
 }

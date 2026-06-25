@@ -31,6 +31,21 @@ const usageHistorySchema = new mongoose.Schema(
       trim: true,
       default: "",
     },
+    inventoryGroup: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+    category: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+    subCategory: {
+      type: String,
+      trim: true,
+      default: "",
+    },
   },
   { timestamps: true }
 );

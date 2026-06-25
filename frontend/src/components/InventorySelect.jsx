@@ -1,4 +1,14 @@
-function InventorySelect({ id, label, value, onChange, options, disabled, placeholder, fullWidth }) {
+function InventorySelect({
+  id,
+  label,
+  value,
+  onChange,
+  options,
+  disabled,
+  placeholder,
+  fullWidth,
+  required = true,
+}) {
   return (
     <div className={`form-group${fullWidth ? " form-full" : ""}`}>
       <label htmlFor={id}>{label}</label>
@@ -8,7 +18,7 @@ function InventorySelect({ id, label, value, onChange, options, disabled, placeh
         value={value}
         onChange={onChange}
         disabled={disabled}
-        required={!disabled}
+        required={required && !disabled}
       >
         <option value="">{placeholder}</option>
         {options.map((option) => (
